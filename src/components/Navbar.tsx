@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
+import { useCart } from "@/context/CartContext";
 
 interface NavbarProps {
   currentPage: string;
@@ -18,6 +19,7 @@ const NAV_LINKS = [
 
 export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { totalCount, openCart } = useCart();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-md"
@@ -56,12 +58,14 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
           <button className="text-white/60 hover:text-white transition-colors relative">
             <Icon name="Heart" size={20} />
           </button>
-          <button className="text-white/60 hover:text-white transition-colors relative">
+          <button onClick={openCart} className="text-white/60 hover:text-white transition-colors relative">
             <Icon name="ShoppingBag" size={20} />
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold"
-              style={{ background: "#FF2D78", color: "#fff" }}>
-              2
-            </span>
+            {totalCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold"
+                style={{ background: "#FF2D78", color: "#fff" }}>
+                {totalCount > 9 ? "9+" : totalCount}
+              </span>
+            )}
           </button>
           <button
             className="lg:hidden text-white/60 hover:text-white transition-colors"

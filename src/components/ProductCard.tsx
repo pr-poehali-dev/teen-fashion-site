@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 import type { Product } from "@/data/products";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +16,15 @@ const BADGE_COLORS: Record<string, { bg: string; text: string }> = {
 export default function ProductCard({ product }: ProductCardProps) {
   const [liked, setLiked] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [added, setAdded] = useState(false);
+  const { addItem } = useCart();
+
+  const handleAdd = () => {
+    const size = selectedSize || product.sizes[0];
+    addItem(product, size);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  };
 
   const badge = product.badge ? BADGE_COLORS[product.badge] : null;
 
@@ -94,9 +104,11 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
           </div>
-          <button className="w-7 h-7 flex items-center justify-center transition-all hover:scale-110"
-            style={{ background: "#FF2D78", borderRadius: "2px" }}>
-            <Icon name="Plus" size={14} className="text-white" />
+          <button
+            onClick={handleAdd}
+            className="w-7 h-7 flex items-center justify-center transition-all hover:scale-110"
+            style={{ background: added ? "#22C55E" : "#FF2D78", borderRadius: "2px" }}>
+            <Icon name={added ? "Check" : "Plus"} size={14} className="text-white" />
           </button>
         </div>
       </div>
